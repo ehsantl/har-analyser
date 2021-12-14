@@ -1,5 +1,8 @@
 # HAR-Analyser
-NodeJS library to preview and analyse HAR file 
+
+A simple utility to replay and calcualte average request time the contents of a HTTP Archive (HAR) file while maintaining the delay between requests. Utilizes the request npm module to execute the HTTP replay requests.
+
+
 
 Sample:
 `
