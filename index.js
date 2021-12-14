@@ -1,5 +1,5 @@
-// node hbar.js --file=sample/test.har
-const harReplay = require('har-replay');
+// node hbar.js --file=sample/test.har --repeat=5 --sleep=50000
+const harReplay = require('./har-replay');
 const process = require( 'process' );
 
 // get the arguments
@@ -16,7 +16,7 @@ const argv = key => {
 }
 
 const repeat = argv("repeat") || 1;
-
+const sleepMs = argv("sleep") || 20000;
 
 class Timer {
     // Automatically starts the timer
@@ -38,20 +38,30 @@ class Timer {
     runtimeMsStr() {
         return `${this.name} took ${this.runtimeMs()} milliseconds`;
     }
+
 }
 
-function call(i) {
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+function call(index, timer) {
     harReplay.load(argv('file'), { 
+        replayCachedEntries: true,
         beforeRequest: function(request) {
             //request.headers['Some-New-Header'] = 'abc';
         },
         onResponse: function(response, request, body) {
-            console.log('Response status code for ' + request.url + ': ' + response.statusCode);
+            //console.log('Response status code for ' + request.url + ': ' + response.statusCode);
         },
         onFinish: function() {
-            console.log('All done!');
-            console.log(t.runtimeMsStr());
-            console.log(i)
+            const lapTimer = timer.runtimeMs();
+            sum += lapTimer
+            average = sum / (index + 1)
+            summary.push({"request": lapTimer, average})
+            console.log("iteration " + index);
         },
         onError: function(error, request) {
             console.error(error);
@@ -59,12 +69,22 @@ function call(i) {
     });
 }
 
-const t = new Timer('Time for ' + argv('file'))
-
-for (var i = 0; i < repeat; i++) {
-    t.runtimeMsStr();
-    call(i);
+let average = 0;
+let sum = 0;
+var summary = [];
+const repeatFunction = async _ => {
+    for (let index = 0; index < repeat; index++) {
+        const timer = new Timer('Time for ' + argv('file') + ' i:' + index)
+        const callF = await call(index, timer);
+        await sleep(sleepMs)
+    }
+    console.table(summary)
+    console.table(summary[summary.length-1])
 }
+
+
+repeatFunction();
+
 
 
 

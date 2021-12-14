@@ -1,0 +1,19 @@
+{
+  "name": "har-analyser",
+  "version": "1.0.0",
+  "description": "NodeJS library to preview and analyse HAR file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ehsantl/har-analyser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ehsantl/har-analyser/issues"
+  },
+  "homepage": "https://github.com/ehsantl/har-analyser#readme"
+}
